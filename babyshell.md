@@ -20,8 +20,7 @@ L'une des deux est la fonction ``main``.<br><br>
 </p>
 <br>
 La fonction est simple: <br>
-1) ``mmap()`` et utilisé sur une région et la rend écrivable, lisible et exécutable. La fonction ``mmap()`` a un peu le même effet que la commande ``chmod`` 
-sous linux, à la différence près que cette fois-ci c'est une partie de la pile, et non un fichier dont on change les permissions d'accès.
+1) ``mmap()`` et utilisé sur une région et la rend écrivable, lisible et exécutable. La fonction ``mmap()`` a un peu le même effet que la commande ``chmod`` sous linux, à la différence près que cette fois-ci c'est une partie de la pile, et non un fichier dont on change les permissions d'accès.
 L'utilisation de cette fonction tombe donc sous le sens: le but est d'exécuter un shellcode, il faut donc pouvoir le mettre quelque part, et ensuite l'exécuter!<br>
 2) On nous demande notre shellcode, puis celui-ci est passé dans la fonction ``check_shellcode()``. On reviendra bien vite à cette fonction. Cependant, si 
 la ``check_shellcode()`` renvoie une autre valeur que 0, la condition n'est pas remplie et par conséquent notre shellcode ne sera pas exécuté.<br>
@@ -34,7 +33,7 @@ la ``check_shellcode()`` renvoie une autre valeur que 0, la condition n'est pas 
 <img src="https://cdn.discordapp.com/attachments/693164567307616310/1033816015643103405/unknown.png">
 </p>
 <br>
-Cette fonction n'est pas très complexe non plus, en sommes ce qu'elle fait c'est qu'elle cherche soit pour une chaine de caractère soit un caractère précis.
+Cette fonction n'est pas très complexe non plus, en quelques mots ce qu'elle fait c'est qu'elle cherche soit pour une chaine de caractère soit un caractère précis.
 Si c'est trouvé la fonction va renvoyer une valeur différente de 0, et du coup nous empêcher d'exécuter notre shellcode.<br>
 Mais quelles (chaines de) caractères sont bloqués exactement?<br>
 
@@ -68,7 +67,7 @@ io.sendline(shellcode)
 io.interactive()
 
 ```
-*J'utilise ``shellcraft`` qui vient de pwntools pour me simplifier la vie, mais on peut aussi très bien écrire à la main le shellcode. Si vous voulez plus d'info sur ``shellcraft`` vous pouvez trouver ça ![ici](https://docs.pwntools.com/en/stable/shellcraft.html)*
+*J'utilise ``shellcraft`` qui vient de pwntools pour me simplifier la vie, mais on peut aussi très bien écrire à la main le shellcode. Si vous voulez plus d'info sur ``shellcraft`` vous pouvez trouver ça [ici](https://docs.pwntools.com/en/stable/shellcraft.html)*
 <br>
 Je le lance donc en local et... toujours pas accepté! À ce moment je commence à vraiment me poser des questions et débugger mon payload. Après 5 à 10 minutes, je réalise mon erreur et sens un terrible sentiment d'epic fail. La fonction ``sendline()`` ajoute automatiquement un retour à la ligne à ce que j'envoie. Ca vous rappelle pas quelque chose le retour à la ligne? Et ouais! C'est un des caratères qui est interdit!<br>
 Du coup, je modifie ``io.sendline(shellcode)`` par ``io.send(shellcode)``, je relance en local et hop! J'ai un shell. Plus qu'à modifier et tester en remote.<br>
