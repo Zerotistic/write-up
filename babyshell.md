@@ -51,10 +51,11 @@ Ok, maintenant on sait que ``/bin/bash``, ``/bin/sh``, ``/bin//sh`` et ``flag.tx
 Et maintenant on sait que les caractères 0x20 (un espace) et 0x0a (un retour à la ligne) sont aussi interdits!
 
 ## Création d'un exploit
-La première idée qui m'est venue en tête est une idée que j'utilise dans d'autres exploits, par facilité. Et si j'appelais simplement la fonction ``fgets()`` ? Je pourrais directement écrire dans la zone exécutable et ne pas avoir à passer par la fonction ``check_shellcode()``! <br>
-Je me mets donc à créer l'exploit, et la je lance! Plus qu'à attendre le shell... ou pas! Bizarrement, mon exploit est bloqué? Mmmh bizarre. J'ai donc abandonné cette idée, et une solution bien plus simple me vient en tête. Je peux simplement utiliser ``execve()`` et appeler ``/bin/////bash``!<br>
+La première idée qui m'est venue en tête est une idée un peu plus compliquée que besoin (et au final pas forcément faisable). Et si j'appelais simplement la fonction ``fgets()`` ? Je pourrais directement écrire dans la zone exécutable et ne pas avoir à passer par la fonction ``check_shellcode()``! <br>
+Je me mets donc à créer l'exploit, et la je lance! Plus qu'à attendre le shell... ou pas! Bizarrement, mon exploit est bloqué? Mmmh bizarre, j'y reviendrais plus tard mais pour le moment j'ai abandonné cette idée. Une solution bien plus simple me vient en tête. Je peux simplement utiliser ``execve()`` et appeler ``/bin/////bash``!<br>
 Cette fonction a pour but d'exécuter un programme en donnant son chemin d'accès, du coup ça exécuterait ``/bin/////bash`` et me donnerait un shell.<br>
-Je me mets donc au boulot et obtiens cet exploit:
+Je me mets donc au boulot et obtiens cet exploit:<br>
+
 ```py
 from pwn import *
 context.arch = "amd64"
@@ -65,13 +66,16 @@ shellcode = asm(shellcraft.execve("/bin/////bash"))
 io.sendline(shellcode)
 
 io.interactive()
+
 ```
+*J'utilise ``shellcraft`` qui vient de pwntools pour me simplifier la vie, mais on peut aussi très bien écrire à la main le shellcode. Si vous voulez plus d'info sur ``shellcraft`` vous pouvez trouver ça ![ici](https://docs.pwntools.com/en/stable/shellcraft.html)*
 <br>
 Je le lance donc en local et... toujours pas accepté! À ce moment je commence à vraiment me poser des questions et débugger mon payload. Après 5 à 10 minutes, je réalise mon erreur et sens un terrible sentiment d'epic fail. La fonction ``sendline()`` ajoute automatiquement un retour à la ligne à ce que j'envoie. Ca vous rappelle pas quelque chose le retour à la ligne? Et ouais! C'est un des caratères qui est interdit!<br>
 Du coup, je modifie ``io.sendline(shellcode)`` par ``io.send(shellcode)``, je relance en local et hop! J'ai un shell. Plus qu'à modifier et tester en remote.<br>
 
 ## Exploit final
 <br>
+
 ```py
 from pwn import *
 context.arch = "amd64"
