@@ -20,7 +20,7 @@ L'une des deux est la fonction ``main``.<br><br>
 </p>
 <br>
 La fonction est simple: <br>
-1) ``mmap()`` et utilisé sur une région et la rend écrivable, lisible et exécutable. La fonction ``mmap()`` a un peu le même effet que la commande ``chmod`` sous linux, à la différence près que cette fois-ci c'est une partie de la pile, et non un fichier dont on change les permissions d'accès.
+1) ``mmap()`` et utilisé sur une région et la accessible en écriture, lecture et exécution. La fonction ``mmap()`` a un peu le même effet que la commande ``chmod`` sous linux, à la différence près que cette fois-ci c'est une partie de la pile, et non un fichier dont on change les permissions d'accès.
 L'utilisation de cette fonction tombe donc sous le sens: le but est d'exécuter un shellcode, il faut donc pouvoir le mettre quelque part, et ensuite l'exécuter!<br>
 2) On nous demande notre shellcode, puis celui-ci est passé dans la fonction ``check_shellcode()``. On reviendra bien vite à cette fonction. Cependant, si 
 la ``check_shellcode()`` renvoie une autre valeur que 0, la condition n'est pas remplie et par conséquent notre shellcode ne sera pas exécuté.<br>
@@ -51,7 +51,7 @@ Et maintenant on sait que les caractères 0x20 (un espace) et 0x0a (un retour à
 
 ## Création d'un exploit
 La première idée qui m'est venue en tête est une idée un peu plus compliquée que besoin (et au final pas forcément faisable). Et si j'appelais simplement la fonction ``fgets()`` ? Je pourrais directement écrire dans la zone exécutable et ne pas avoir à passer par la fonction ``check_shellcode()``! <br>
-Je me mets donc à créer l'exploit, et la je lance! Plus qu'à attendre le shell... ou pas! Bizarrement, mon exploit est bloqué? Mmmh bizarre, j'y reviendrais plus tard mais pour le moment j'ai abandonné cette idée. Une solution bien plus simple me vient en tête. Je peux simplement utiliser ``execve()`` et appeler ``/bin/////bash``!<br>
+Je me mets donc à créer l'exploit, et la je lance! Plus qu'à attendre le shell... ou pas! Bizarrement, mon exploit est bloqué? Mmmh bizarre, j'y reviendrais plus tard mais pour le moment j'ai abandonné cette idée. Une solution bien plus simple me vient en tête. Je peux simplement utiliser ``execve()`` (j'aurais aussi pû utiliser ``system()``) et appeler ``/bin/////bash``!<br>
 Cette fonction a pour but d'exécuter un programme en donnant son chemin d'accès, du coup ça exécuterait ``/bin/////bash`` et me donnerait un shell.<br>
 Je me mets donc au boulot et obtiens cet exploit:<br>
 
