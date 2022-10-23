@@ -49,6 +49,7 @@ On sait donc maintenant que ``/bin/bash``, ``/bin/sh``, ``/bin//sh`` et ``flag.t
 </p>
 Et maintenant on sait que les caractères 0x20 (un espace) et 0x0a (un retour à la ligne) sont aussi interdits!
 <br>
+
 ## Création d'un exploit
 <br>
 La première idée qui m'est venue en tête est une idée un peu plus compliquée que besoin (et au final pas forcément faisable). Et si j'appelais simplement la fonction ``fgets()`` ? Je pourrais directement écrire dans la zone exécutable et ne pas avoir à passer par la fonction ``check_shellcode()``! <br>
@@ -96,6 +97,7 @@ io.interactive()
 <br>
 Flag: ``RM{__tw34k1ng_sh3llc0dez_4_dumm13s!}``
 <br>
+
 ## Petit mot de fin
 <br>
 Ce challenge n'était pas extrêmement compliqué, mais c'était chouette de le résoudre. J'ai bien aimé le CTF en général et j'espère que tous ceux qui y ont joué ont eu autant de fun que moi!
