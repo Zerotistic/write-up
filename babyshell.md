@@ -19,6 +19,7 @@ L'une des deux est la fonction ``main``.<br><br>
 <img src="https://cdn.discordapp.com/attachments/693164567307616310/1033812795654930524/unknown.png">
 </p>
 <br>
+
 La fonction est simple: <br>
 1) ``mmap()`` et utilisé sur une région et la accessible en écriture, lecture et exécution. La fonction ``mmap()`` a un peu le même effet que la commande ``chmod`` sous linux, à la différence près que cette fois-ci c'est une partie de la pile, et non un fichier dont on change les permissions d'accès.
 L'utilisation de cette fonction tombe donc sous le sens: le but est d'exécuter un shellcode, il faut donc pouvoir le mettre quelque part, et ensuite l'exécuter!<br>
@@ -36,17 +37,16 @@ la ``check_shellcode()`` renvoie une autre valeur que 0, la condition n'est pas 
 Cette fonction n'est pas très complexe non plus, en quelques mots ce qu'elle fait c'est qu'elle cherche soit pour une chaine de caractère soit un caractère précis.
 Si c'est trouvé la fonction va renvoyer une valeur différente de 0, et du coup nous empêcher d'exécuter notre shellcode.<br>
 Mais quelles (chaines de) caractères sont bloqués exactement?<br>
-
+En regardant ``BLACKLISTED_STRINGS`` on peut trouver les chaines bloquées
 <p align="center">
 <img src="https://cdn.discordapp.com/attachments/693164567307616310/1033818189156585534/unknown.png">
 </p>
 <br>
-Ok, maintenant on sait que ``/bin/bash``, ``/bin/sh``, ``/bin//sh`` et ``flag.txt`` sont des chaines interdites. 
+On sait donc maintenant que ``/bin/bash``, ``/bin/sh``, ``/bin//sh`` et ``flag.txt`` sont des chaines interdites. En regardant ``BLACKLISTED_CHARS`` on peut trouver les caractères bloqués.
 <br>
 <p align="center">
 <img src="https://cdn.discordapp.com/attachments/693164567307616310/1033818900451831878/unknown.png">
 </p>
-<br>
 Et maintenant on sait que les caractères 0x20 (un espace) et 0x0a (un retour à la ligne) sont aussi interdits!
 
 ## Création d'un exploit
@@ -68,7 +68,7 @@ io.interactive()
 
 ```
 *J'utilise ``shellcraft`` qui vient de pwntools pour me simplifier la vie, mais on peut aussi très bien écrire à la main le shellcode. Si vous voulez plus d'info sur ``shellcraft`` vous pouvez trouver ça [ici](https://docs.pwntools.com/en/stable/shellcraft.html)*
-<br>
+<br><br>
 Je le lance donc en local et... toujours pas accepté! À ce moment je commence à vraiment me poser des questions et débugger mon payload. Après 5 à 10 minutes, je réalise mon erreur et sens un terrible sentiment d'epic fail. La fonction ``sendline()`` ajoute automatiquement un retour à la ligne à ce que j'envoie. Ca vous rappelle pas quelque chose le retour à la ligne? Et ouais! C'est un des caratères qui est interdit!<br>
 Du coup, je modifie ``io.sendline(shellcode)`` par ``io.send(shellcode)``, je relance en local et hop! J'ai un shell. Plus qu'à modifier et tester en remote.<br>
 
@@ -79,7 +79,7 @@ Du coup, je modifie ``io.sendline(shellcode)`` par ``io.send(shellcode)``, je re
 from pwn import *
 context.arch = "amd64"
 
-io = process('./babyshell')
+io = remote('ctf10k.root-me.org', 5004)
 
 shellcode = asm(shellcraft.execve("/bin/////bash"))
 io.sendline(shellcode)
@@ -94,3 +94,6 @@ io.interactive()
 <br>
 <br>
 Flag: ``RM{__tw34k1ng_sh3llc0dez_4_dumm13s!}``
+
+## Petit mot de fin
+Ce challenge n'était pas extrêmement compliqué, mais c'était chouette de le résoudre. J'ai bien aimé le CTF en général et j'espère que tous ceux qui y ont joué ont eu autant de fun que moi!
