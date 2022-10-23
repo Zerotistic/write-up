@@ -1,5 +1,5 @@
 # Babyshell
-
+<br>
 <p align="center">
 <img src="https://cdn.discordapp.com/attachments/693164567307616310/1033811198585614416/unknown.png">
 </p>
@@ -14,7 +14,7 @@ Le programme est relativement petit et n'a que deux fonctions importantes.
 L'une des deux est la fonction ``main``.<br><br>
 
 ## main()
-
+<br>
 <p align="center">
 <img src="https://cdn.discordapp.com/attachments/693164567307616310/1033812795654930524/unknown.png">
 </p>
@@ -29,7 +29,7 @@ la ``check_shellcode()`` renvoie une autre valeur que 0, la condition n'est pas 
 <br><br>
 
 ## check_shellcode()
-
+<br>
 <p align="center">
 <img src="https://cdn.discordapp.com/attachments/693164567307616310/1033816015643103405/unknown.png">
 </p>
@@ -48,8 +48,9 @@ On sait donc maintenant que ``/bin/bash``, ``/bin/sh``, ``/bin//sh`` et ``flag.t
 <img src="https://cdn.discordapp.com/attachments/693164567307616310/1033818900451831878/unknown.png">
 </p>
 Et maintenant on sait que les caractères 0x20 (un espace) et 0x0a (un retour à la ligne) sont aussi interdits!
-
+<br>
 ## Création d'un exploit
+<br>
 La première idée qui m'est venue en tête est une idée un peu plus compliquée que besoin (et au final pas forcément faisable). Et si j'appelais simplement la fonction ``fgets()`` ? Je pourrais directement écrire dans la zone exécutable et ne pas avoir à passer par la fonction ``check_shellcode()``! <br>
 Je me mets donc à créer l'exploit, et la je lance! Plus qu'à attendre le shell... ou pas! Bizarrement, mon exploit est bloqué? Mmmh bizarre, j'y reviendrais plus tard mais pour le moment j'ai abandonné cette idée. Une solution bien plus simple me vient en tête. Je peux simplement utiliser ``execve()`` (j'aurais aussi pû utiliser ``system()``) et appeler ``/bin/////bash``!<br>
 Cette fonction a pour but d'exécuter un programme en donnant son chemin d'accès, du coup ça exécuterait ``/bin/////bash`` et me donnerait un shell.<br>
@@ -94,6 +95,7 @@ io.interactive()
 <br>
 <br>
 Flag: ``RM{__tw34k1ng_sh3llc0dez_4_dumm13s!}``
-
+<br>
 ## Petit mot de fin
+<br>
 Ce challenge n'était pas extrêmement compliqué, mais c'était chouette de le résoudre. J'ai bien aimé le CTF en général et j'espère que tous ceux qui y ont joué ont eu autant de fun que moi!
